@@ -56,8 +56,12 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 0){
             if(resultCode == Activity.RESULT_OK && data != null){
-                Bitmap photo =(Bitmap) data.getExtras().get("data");
-                createDirectoryAndSaveFile(photo,"tempImage.jpg");
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_PERMISSION);
+                } else {
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    createDirectoryAndSaveFile(photo, "tempImage.jpg");
+                }
 //                Uri imageUri = data.getData();
 //                String[] orientationColumn = {MediaStore.Images.Media.ORIENTATION};
 //                Cursor cur = managedQuery(imageUri, orientationColumn, null, null, null);
@@ -72,37 +76,37 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-//        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
-//            String result = data.toURI();
-//            capturedImageUri = data.getData();
-////            try {
-//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
-//                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_PERMISSION);
-//                } else {
-////                    selectedImagePath = getRealPathFromURIPath(capturedImageUri, MainActivity.this);
-////                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), capturedImageUri);
-////                    capturedPhoto.setImageBitmap(exifRotateImage(capturedImageUri));
-//                    createDirectoryAndSaveFile((Bitmap) data.getExtras().get("data"),"tempImage.jpg");
-////                    capturedPhoto.setImageBitmap(bitmap);
-//                }
-////            } catch (IOException e) {
-////                e.printStackTrace();
-////            }
-//            Log.d(TAG, "Image path return" + result);
-//        }
+        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+            String result = data.toURI();
+            capturedImageUri = data.getData();
+//            try {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_PERMISSION);
+                } else {
+//                    selectedImagePath = getRealPathFromURIPath(capturedImageUri, MainActivity.this);
+//                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), capturedImageUri);
+//                    capturedPhoto.setImageBitmap(exifRotateImage(capturedImageUri));
+                    createDirectoryAndSaveFile((Bitmap) data.getExtras().get("data"),"tempImage.jpg");
+//                    capturedPhoto.setImageBitmap(bitmap);
+                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+            Log.d(TAG, "Image path return" + result);
+        }
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == REQUEST_READ_PERMISSION) {
-//            if (grantResults.length == 0) {
-//                // permission denied
-//            }else{
-//                // permission granted
-//            }
-//        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_READ_PERMISSION) {
+            if (grantResults.length == 0) {
+                // permission denied
+            }else{
+                // permission granted
+            }
+        }
+    }
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
